@@ -8,11 +8,22 @@ CREATE TABLE department (
     name VARCHAR(30) NOT NULL,
 );
 
-CREATE TABLE role (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(30) UNIQUE NOT NULL,
-    salary DECIMAL UNSIGNED NOT NULL,
-    department_id INT UNSIGNED NOT NULL,  
+-- CREATE TABLE role (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     title VARCHAR(30) UNIQUE NOT NULL,
+--     salary DECIMAL UNSIGNED NOT NULL,
+--     department_id INT UNSIGNED NOT NULL,  
+    
+-- );
+
+CREATE TABLE role(
+    position INT NOT NULL,
+    title VARCHAR(30) NULL,
+    salary DECIMAL(7,2) NULL,
+    department_id INT NOT NULL,
+    PRIMARY KEY (position),
+    FOREIGN KEY (department_id) REFERENCES department(id),
+
 );
 
 CREATE TABLE employee (
@@ -20,6 +31,9 @@ CREATE TABLE employee (
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     role_id INT UNSIGNED NOT NULL,
+    manager_id INT NOT NULL
+    FOREIGN KEY (role_id) REFERENCES role(id),
+    FOREIGN KEY (manager_id) REFERENCES manager(id)
 );
 
 USE employee_db;
