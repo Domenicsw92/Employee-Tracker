@@ -162,10 +162,14 @@ const addEmployee = () => {
 
 const removeEmployee = () => {
     connection.query('SELECT employee.id, employee.first_name, employee.last_name, role.title,role.salary,department.department,manager_id FROM employee JOIN role ON employee.role_id=role.id JOIN department on department.id = role.department_id',
-        (err, searched) => {
-            if (err) throw err;
-            console.table(searched)});
-            console.log('___________________________________________________________');
+    (err, searched) => {
+        if (err) throw err;
+        console.table(searched)
+        removeEmpID();
+    });
+}
+
+const removeEmpID =()=>{
     inquirer.prompt([
         {
             name: 'id',
@@ -186,6 +190,7 @@ const removeEmployee = () => {
         );
     });
 }
+
 
 const addDepartment = () => {
     inquirer.prompt([
@@ -208,7 +213,16 @@ const addDepartment = () => {
         );
 }
 
-const removeDepartment = () => {
+const removeDepartment = () =>{
+    connection.query('SELECT * FROM department',
+    function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        removeDEPID()
+    })
+}
+
+const removeDEPID = () =>{
     inquirer.prompt([
         {
             name: 'id',
@@ -264,7 +278,17 @@ const addRole = () => {
         );
 }
 
-const removeRole = () => {
+const removeRole = () =>{
+    connection.query('SELECT * FROM role',
+    function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        removeRoleID()
+    })
+}
+
+
+const removeRoleID = () => {
     inquirer.prompt([
         {
             name: 'id',
