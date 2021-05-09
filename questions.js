@@ -2,105 +2,121 @@ const mysql = require('mysql');
 const Sequelize = require('sequelize');
 const inquirer = require('inquirer');
 const express = require('express');
-const co
+const cTable = require('console.table')
+require('dotenv').config();
 
-module.exports = function () {
-    const start = () => {
-        inquirer
-            .prompt({
-                name: 'mainMenu',
-                type: 'list',
-                message: 'What would you like to do? ',
-                choices: [
-                    'View All Employees',
-                    'View All Empoyees By Department',
-                    'View All Employees By Manager',
-                    'Add Employee',
-                    'Remove Employee',
-                    'Update Employee Role',
-                    'Update Employee Manager'
-                ]
-            }).then((answer) => {
-                switch (answer.action) {
-                    case 'View All Employees':
-                        employeeSearch();
-                        break;
+const connection = mysql.createConnection({
+    host: 'localhost',
 
-                    case 'View All Empoyees By Department':
-                        departmentSearch();
-                        break;
+    // Your port; if not 3306
+    port: 3306,
 
-                    case 'View All Employees By Manager':
-                        managerSearch();
-                        break;
+    // Your username
+    user: 'root',
 
-                    case 'Add Employee':
-                        addEmployee();
-                        break;
+    // Be sure to update with your own MySQL password!
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
 
-                    case 'Remove Employee':
-                        removeEmployee();
-                        break;
+});
 
-                    case 'Update Employee Role':
-                        updateEmployee();
-                        break;
-
-                    case 'Update Employee Manager':
-                        updateManager();
-                        break;
-
-                    default:
-                        break;
-                }
-            });
-    }
-
-    const employeeSearch = () => {
-        connection.query("SELECT first_name AS FirstName , last_name as LastName , role.title as Role, role.salary AS Salary, department.name AS Department");
-        query += ("FROM employee INNER JOIN department ON department.id = employee.role_id left JOIN role ON role.id = employee.role_id",
-            function (err, searched) {
-                console.table(searched)
-
-            })
-        return start()
-    }
-
-    const departmentSearch = () => {
-        inquirer.prompt({
-            name: 'departSearch',
+const start = () => {
+    inquirer
+        .prompt({
+            name: 'mainMenu',
             type: 'list',
+            message: 'What would you like to do? ',
             choices: [
-                'Sales',
-                'Engineering',
-                'Finance',
-                'Legal'
+                'View All Employees',
+                'View All Employees By Department',
+                'View All Employees By Manager',
+                'Add Employee',
+                'Remove Employee',
+                'Update Employee Role',
+                'Update Employee Manager'
             ]
         }).then((answer) => {
-            switch (answer.action) {
-                case 'Sales':
-                    salesSearch();
+            switch (answer.mainMenu) {
+                case 'View All Employees':
+                    employeeSearch();
                     break;
 
-                case 'Engineering':
-                    engineerSearch();
+                case 'View All Employees By Department':
+                    departmentSearch();
                     break;
 
-                case 'Finance':
-                    financeSearch();
+                case 'View All Employees By Manager':
+                    managerSearch();
                     break;
 
-                case 'Legal':
-                    legalSearch();
+                case 'Add Employee':
+                    addEmployee();
+                    break;
+
+                case 'Remove Employee':
+                    removeEmployee();
+                    break;
+
+                case 'Update Employee Role':
+                    updateEmployee();
+                    break;
+
+                case 'Update Employee Manager':
+                    updateManager();
                     break;
 
                 default:
                     break;
             }
         });
+}
 
-    }
-
+const employeeSearch = () => {
+    connection.query('SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name  AS Department FROM employee INNER JOIN department ON department.id = employee.role_id  left JOIN role ON role.id = employee.role_id',
+        (err, searched) => {
+            if (err) throw err;
+            console.table(searched);
+            start();
+        }
+        );
     
+}
+/// connection.querey for all departments apend departments into an array 
+const departmentSearch = () => {
+    inquirer.prompt({
+        name: 'departSearch',
+        type: 'list',
+        choices: [
+            'Sales',
+            'Engineering',
+            'Finance',
+            'Legal'
+        ]
+    }).then((answer) => {
+        switch (answer.departSearch) {
+            case 'Sales':
+                salesSearch();
+                break;
+
+            case 'Engineering':
+                engineerSearch();
+                break;
+
+            case 'Finance':
+                financeSearch();
+                break;
+
+            case 'Legal':
+                legalSearch();
+                break;
+
+            default:
+                break;
+        }
+    });
 
 }
+
+
+
+start()
