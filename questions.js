@@ -1,9 +1,6 @@
 const mysql = require('mysql');
-const Sequelize = require('sequelize');
 const inquirer = require('inquirer');
-const express = require('express');
 const cTable = require('console.table');
-const { query } = require('express');
 require('dotenv').config();
 
 const connection = mysql.createConnection({
@@ -86,7 +83,7 @@ const employeeSearch = () => {
     connection.query('SELECT employee.id, employee.first_name, employee.last_name, role.title,role.salary,department.department,manager_id FROM employee JOIN role ON employee.role_id=role.id JOIN department on department.id = role.department_id',
         (err, searched) => {
             if (err) throw err;
-            console.table(searched)
+            cTable(searched)
             start();
         });
 
