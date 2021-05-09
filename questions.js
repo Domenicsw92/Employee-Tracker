@@ -133,6 +133,14 @@ const rolesSearch = () => {
 }
 
 const addEmployee = () => {
+    connection.query('SELECT * FROM role',
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            addEmpRole()
+        })
+}
+const addEmpRole = ()=> {
     inquirer.prompt([
         {
             name: 'firstName',
@@ -196,11 +204,20 @@ const removeEmpID = () => {
     });
 }
 const updateEmployee = () => {
+    connection.query('SELECT employee.id, employee.first_name, employee.last_name, role.title,role.salary,department.department,role_id FROM employee JOIN role ON employee.role_id=role.id JOIN department on department.id = role.department_id',
+    (err, searched) => {
+        if (err) throw err;
+        console.table(searched)
+        updateEmpRole();
+    });
+
+}
+const updateEmpRole =() =>{
     inquirer.prompt([
         {
             name: 'employeeId',
             type: 'input',
-            message: 'What is Employee would you like to update, Enter the Employee ID?'
+            message: 'What  Employee would you like to update, Enter the Employees ID?'
         },
         {
             name: 'newRole',
@@ -208,14 +225,13 @@ const updateEmployee = () => {
             message: 'What is the new Role you would you like to give this Employee, Enter the new Role ID?'
         }
     ]).then((res) => {
-        connection.query(`UPDATE employee SET role_id = ${res.newRole} WHERE id =${res.employeeId} ?`,
+        console.log ("updating employee role")
+        connection.query(
+            `UPDATE employee SET role_id = ${res.newRole} WHERE id =${res.employeeId}`,
             (err) => {
-                if
-                    (err) throw err
+                if (err) throw err
+                start();
             })
-
-        start();
-
     })
 }
 
@@ -273,6 +289,14 @@ const removeDEPID = () => {
 }
 
 const addRole = () => {
+    connection.query('SELECT * FROM role',
+    function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        addNewRole()
+    })
+}
+const addNewRole =()=>{
     inquirer.prompt([
         {
             name: 'roleTitle',
