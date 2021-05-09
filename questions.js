@@ -30,6 +30,7 @@ const start = () => {
                 'View All Roles',
                 'Add Employee',
                 'Remove Employee',
+                'Update Employee',
                 'Add a Department',
                 'Remove a Department',
                 'Add a Role',
@@ -56,6 +57,10 @@ const start = () => {
 
                 case 'Remove Employee':
                     removeEmployee();
+                    break;
+
+                case 'Update Employee':
+                    updateEmployee();
                     break;
 
                 case 'Add a Department':
@@ -162,14 +167,14 @@ const addEmployee = () => {
 
 const removeEmployee = () => {
     connection.query('SELECT employee.id, employee.first_name, employee.last_name, role.title,role.salary,department.department,manager_id FROM employee JOIN role ON employee.role_id=role.id JOIN department on department.id = role.department_id',
-    (err, searched) => {
-        if (err) throw err;
-        console.table(searched)
-        removeEmpID();
-    });
+        (err, searched) => {
+            if (err) throw err;
+            console.table(searched)
+            removeEmpID();
+        });
 }
 
-const removeEmpID =()=>{
+const removeEmpID = () => {
     inquirer.prompt([
         {
             name: 'id',
@@ -189,6 +194,29 @@ const removeEmpID =()=>{
             }
         );
     });
+}
+const updateEmployee = () => {
+    inquirer.prompt([
+        {
+            name: 'employeeId',
+            type: 'input',
+            message: 'What is Employee would you like to update, Enter the Employee ID?'
+        },
+        {
+            name: 'newRole',
+            type: 'input',
+            message: 'What is the new Role you would you like to give this Employee, Enter the new Role ID?'
+        }
+    ]).then((res) => {
+        connection.query(`UPDATE employee SET role_id = ${res.newRole} WHERE id =${res.employeeId} ?`,
+            (err) => {
+                if
+                    (err) throw err
+            })
+
+        start();
+
+    })
 }
 
 
@@ -213,16 +241,16 @@ const addDepartment = () => {
         );
 }
 
-const removeDepartment = () =>{
+const removeDepartment = () => {
     connection.query('SELECT * FROM department',
-    function (err, res) {
-        if (err) throw err;
-        console.table(res);
-        removeDEPID()
-    })
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            removeDEPID()
+        })
 }
 
-const removeDEPID = () =>{
+const removeDEPID = () => {
     inquirer.prompt([
         {
             name: 'id',
@@ -278,13 +306,13 @@ const addRole = () => {
         );
 }
 
-const removeRole = () =>{
+const removeRole = () => {
     connection.query('SELECT * FROM role',
-    function (err, res) {
-        if (err) throw err;
-        console.table(res);
-        removeRoleID()
-    })
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            removeRoleID()
+        })
 }
 
 
