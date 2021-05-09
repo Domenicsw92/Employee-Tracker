@@ -33,7 +33,8 @@ const start = () => {
                 'Add a Department',
                 'Remove a Department',
                 'Add a Role',
-                'Remove a Role'
+                'Remove a Role',
+                'Exit'
             ]
         }).then((answer) => {
             switch (answer.mainMenu) {
@@ -74,7 +75,8 @@ const start = () => {
                     break;
 
                 default:
-                    break;
+                    connection.end()
+                    console.log("ALL done have a nice day!!")
             }
         });
 }
@@ -83,7 +85,7 @@ const employeeSearch = () => {
     connection.query('SELECT employee.id, employee.first_name, employee.last_name, role.title,role.salary,department.department,manager_id FROM employee JOIN role ON employee.role_id=role.id JOIN department on department.id = role.department_id',
         (err, searched) => {
             if (err) throw err;
-            cTable(searched)
+            console.table(searched)
             start();
         });
 
@@ -94,10 +96,27 @@ const departmentSearch = () => {
         function (err, res) {
             if (err) throw err;
             console.table(res);
-            start()
+            empPerDepart()
         })
 
 }
+const empPerDepart = () => {
+    inquirer.prompt([
+        {
+            name: 'employeeDepart',
+            type: 'input',
+            message: 'In what Department Would you like to view employees, Enter Department ID?'
+        },
+    ]).then((res) =>
+        connection.query(`SELECT * FROM employee JOIN role ON employee.role_id=role.id JOIN department on department.id = role.department_id WHERE department_id = ${res.employeeDepart}`,
+            (err, searched) => {
+                if (err) throw err;
+                console.table(searched)
+                start();
+            })
+    )
+}
+
 
 const rolesSearch = () => {
     connection.query('SELECT * FROM role',
@@ -142,6 +161,11 @@ const addEmployee = () => {
 }
 
 const removeEmployee = () => {
+    connection.query('SELECT employee.id, employee.first_name, employee.last_name, role.title,role.salary,department.department,manager_id FROM employee JOIN role ON employee.role_id=role.id JOIN department on department.id = role.department_id',
+        (err, searched) => {
+            if (err) throw err;
+            console.table(searched)});
+            console.log('___________________________________________________________');
     inquirer.prompt([
         {
             name: 'id',
