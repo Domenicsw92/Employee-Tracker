@@ -10,7 +10,7 @@ AS a user I want to
 ## Employee-Tracker-APP
 This is an employee tracker application that is ran in an integrated terminal for the user. Once the repo is cloned or forked the user can view and manage his employees.
 ## Demo
-![screenshot](./Readmefiles/noteDemo.gif)
+![screenshot](./Readmefiles/tracker.gif)
 ## Installation
     npm i
     npm install inquirer
